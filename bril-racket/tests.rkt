@@ -3,14 +3,37 @@
 (require rackunit)
 
 (require "bril.rkt")
-(require/expose "bril.rkt" (type-to-jsexpr arg-to-jsexpr instr-to-jsexpr))
+(require/expose "bril.rkt" (type-to-jsexpr arg-to-jsexpr instr-to-jsexpr program-to-jsexpr))
 
 (provide all-tests)
 
 (define all-tests
     (test-suite
      "bril-racket test suite"
-     jsexpr-conversion-testsuite))
+     jsexpr-conversion-testsuite
+     json-output-testsuite))
+
+(define program-listing-1
+   (Program (list
+             (Function "main" '() '()
+                       (list
+                         (Label "start")
+                         (ValueInstr 'add "a" (Type 'int)
+                                   '("z" "w") '() '()))))))
+
+(define json-output-testsuite
+    (test-suite
+     "bril to json conversion"
+     (test-case
+        "program listing to json"
+        (check-equal? (with-output-to-string 
+                          (lambda () (write-bril program-listing-1)))
+                      (string-join (list "{\"functions\":[{\"name\":\"main\",\"instrs\":"
+                                         "[{\"label\":\"start\"},{\"labels\":[],\"type\":"
+                                         "\"int\",\"funcs\":[],\"args\":[\"z\",\"w\"],\""
+                                         "op\":\"add\",\"dest\":\"a\"}],\"args\":[]}]}")
+                                   "")))))
+     
 
 (define jsexpr-conversion-testsuite
     (test-suite
@@ -40,12 +63,22 @@
                              [args . ("z" "w")]
                              [funcs . ()] 
                              [labels . ()]))
-        (check-equal? (instr-to-jsexpr (ValueInstr 'add "a" (Type 'int) 
-                                                   '("z" "w") '() '()))
-                      '#hash([op . "add"]
-                             [dest . "a"]
-                             [type . "int"]
-                             [args . ("z" "w")]
-                             [funcs . ()] 
-                             [labels . ()])))))
+        (check-equal? (instr-to-jsexpr (EffectInstr 'print '("Hello" "World") '() '()))
+                 '#hash([op . "print"]
+                        [args . ("Hello" "World")]
+                        [funcs . ()] 
+                        [labels . ()]))
+        (check-equal? (program-to-jsexpr program-listing-1)
+                      '#hash((functions 
+                              .
+                              [#hash((args .())
+                                     (name . "main")
+                                     (instrs .
+                                             [#hash((label . "start"))
+                                              #hash([op . "add"]
+                                                    [dest . "a"]
+                                                    [type . "int"]
+                                                    [args . ("z" "w")]
+                                                    [funcs . ()] 
+                                                    [labels . ()])]))]))))))
 
