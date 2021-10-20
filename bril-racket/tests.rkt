@@ -3,6 +3,7 @@
 (require rackunit)
 
 (require "bril.rkt")
+(require "interp-bril.rkt")
 (require/expose "bril.rkt" (type-to-jsexpr arg-to-jsexpr instr-to-jsexpr program-to-jsexpr))
 
 (provide all-tests)
@@ -11,7 +12,8 @@
     (test-suite
      "bril-racket test suite"
      jsexpr-conversion-testsuite
-     json-output-testsuite))
+     json-output-testsuite
+     bril-interp-testsuite))
 
 (define program-listing-1
    (Program (list
@@ -20,6 +22,17 @@
                          (Label "start")
                          (ValueInstr 'add "a" (Type 'int)
                                    '("z" "w") '() '()))))))
+
+(define program-listing-2
+   (Program (list
+             (Function "main" '() '()
+                       (list
+                         (Label "start")
+                         (ConstantInstr "z" (Type 'int) 3)
+                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'add "a" (Type 'int)
+                                   '("z" "w") '() '())
+                         (EffectInstr 'print '("a") '() '()))))))
 
 (define json-output-testsuite
     (test-suite
@@ -82,3 +95,6 @@
                                                     [funcs . ()] 
                                                     [labels . ()])]))]))))))
 
+(define bril-interp-testsuite
+    (test-suite "simple program with addition"
+        (interp-bril program-listing-2 "main")))

@@ -4,7 +4,8 @@
 
 (provide 
    Program Function Argument Label ConstantInstr ValueInstr EffectInstr 
-   Type Bool Int effect-ops value-ops write-bril)
+   Type Bool Int effect-ops value-ops write-bril
+   Function-args Type-type)
 
 (struct Program (functions))
 (struct Function (name args return-type instrs))
