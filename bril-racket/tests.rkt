@@ -41,10 +41,10 @@
         "program listing to json"
         (check-equal? (with-output-to-string 
                           (lambda () (write-bril program-listing-1)))
-                      (string-join (list "{\"functions\":[{\"name\":\"main\",\"instrs\":"
-                                         "[{\"label\":\"start\"},{\"labels\":[],\"type\":"
-                                         "\"int\",\"funcs\":[],\"args\":[\"z\",\"w\"],\""
-                                         "op\":\"add\",\"dest\":\"a\"}],\"args\":[]}]}")
+                      (string-join (list "{\"functions\":[{\"args\":[],\"instrs\":[{\"label\":"
+                                         "\"start\"},{\"args\":[\"z\",\"w\"],\"dest\":\"a\","
+                                         "\"funcs\":[],\"labels\":[],\"op\":\"add\",\"type\""
+                                         ":\"int\"}],\"name\":\"main\"}]}")
                                    "")))))
      
 
