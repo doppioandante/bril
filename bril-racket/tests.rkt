@@ -2,9 +2,9 @@
 
 (require rackunit)
 
-(require "bril.rkt")
-(require "interp-bril.rkt")
-(require/expose "bril.rkt" (type-to-jsexpr arg-to-jsexpr instr-to-jsexpr program-to-jsexpr))
+(require "lang.rkt")
+(require "interpreter.rkt")
+(require/expose "lang.rkt" (type-to-jsexpr arg-to-jsexpr instr-to-jsexpr program-to-jsexpr))
 
 (provide all-tests)
 

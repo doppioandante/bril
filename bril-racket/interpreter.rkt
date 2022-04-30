@@ -1,8 +1,8 @@
 #lang racket
 
-(require "bril.rkt")
-
 (provide interp-bril)
+
+(require "lang.rkt")
 
 (define (has-name fun func-name)
   (match fun
