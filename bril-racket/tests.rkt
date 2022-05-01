@@ -34,6 +34,17 @@
                                    '("z" "w") '() '())
                          (EffectInstr 'print '("a") '() '()))))))
 
+(define program-listing-3
+   (Program (list
+             (Function "main" '() '()
+                       (list
+                         (Label "start")
+                         (ConstantInstr "z" (Type 'int) 3)
+                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'add "a" (Type 'int)
+                                   '("z" "w") '() '())
+                         (EffectInstr 'return '("a") '() '()))))))
+
 (define json-output-testsuite
     (test-suite
      "bril to json conversion"
@@ -96,5 +107,11 @@
                                                     [labels . ()])]))]))))))
 
 (define bril-interp-testsuite
-    (test-suite "simple program with addition"
-        (interp-bril program-listing-2 "main")))
+    (test-suite "bril interpreter tests"
+        (test-case
+          "simple program execution "
+          (interp-bril program-listing-2 "main"))
+        (test-case
+          "simple program with return value"
+          (check-equal? (interp-bril program-listing-3 "main")
+                        (list (Type 'int) 8)))))

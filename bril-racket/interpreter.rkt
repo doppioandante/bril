@@ -48,15 +48,19 @@
               (interp-bril-func func actual-args new-env new-pc))]
             [(EffectInstr op args funcs labels)
              (begin
-              (define-values (new-env new-pc) 
+              (define-values (new-env new-pc ret-value)
                   (match op
                    ['nop
-                    (values env (+ pc 1))]
+                    (values env (+ pc 1) '())]
                    ['print
                     (display-bril-var (hash-ref env (car args)))
-                    (values env (+ pc 1))])))
-             (interp-bril-func func actual-args new-env new-pc)]))
-                     
+                    (values env (+ pc 1) '())]
+                   ['return
+                    (values env pc (hash-ref env (car args)))])))
+                    
+             (if (null? ret-value)
+                 (interp-bril-func func actual-args new-env new-pc)
+                 ret-value)]))
        env)]))
 
 (define (eval-args args env)
@@ -65,7 +69,7 @@
                  (cadr (hash-ref env arg))
                  arg))
         args))
-    
+
 (define (display-bril-var var)
   (let ([type (Type-type (car var))]
         [val  (cadr var)])

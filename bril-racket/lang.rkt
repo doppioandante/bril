@@ -14,7 +14,7 @@
 (struct ConstantInstr (dest type value))
 (struct ValueInstr (op dest type args funcs labels))
 (struct EffectInstr (op args funcs labels))
-(struct Type (type))
+(struct Type (type) #:transparent)
 (struct Int (value))
 (struct Bool (value))
 
