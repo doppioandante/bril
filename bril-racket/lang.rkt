@@ -7,16 +7,16 @@
 
 (require json)
 
-(struct Program (functions))
-(struct Function (name args return-type instrs))
-(struct Argument (name type))
-(struct Label (label))
-(struct ConstantInstr (dest type value))
-(struct ValueInstr (op dest type args funcs labels))
-(struct EffectInstr (op args funcs labels))
+(struct Program (functions) #:transparent)
+(struct Function (name args return-type instrs) #:transparent)
+(struct Argument (name type) #:transparent)
+(struct Label (label) #:transparent)
+(struct ConstantInstr (dest type value) #:transparent)
+(struct ValueInstr (op dest type args funcs labels) #:transparent)
+(struct EffectInstr (op args funcs labels) #:transparent)
 (struct Type (type) #:transparent)
-(struct Int (value))
-(struct Bool (value))
+(struct Int (value) #:transparent)
+(struct Bool (value) #:transparent)
 
 (define effect-ops
   '(jump branch call return print nop))
