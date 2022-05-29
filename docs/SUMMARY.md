@@ -8,6 +8,7 @@
     - [Core](lang/core.md)
     - [Static Single Assignment](lang/ssa.md)
     - [Memory](lang/memory.md)
+    - [C Foreign Function Interface](lang/cffi.md)
     - [Floating Point](lang/float.md)
     - [Speculative Execution](lang/spec.md)
     - [Import](lang/import.md)
