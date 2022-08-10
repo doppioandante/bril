@@ -80,4 +80,5 @@
 (define (interp-bril-value-op op type args)
    (match op
       ['id (car args)]
-      ['add (+ (car args) (cadr args))]))
+      ['add (+ (car args) (cadr args))]
+      ['sub (- (car args) (cadr args))]))

@@ -45,6 +45,19 @@
                                    '("z" "w") '() '())
                          (EffectInstr 'return '("a") '() '()))))))
 
+(define program-listing-4
+   (Program (list
+             (Function "main" '() '()
+                       (list
+                         (Label "start")
+                         (ConstantInstr "z" (Type 'int) 3)
+                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'sub "a" (Type 'int)
+                                   '("z" "w") '() '())
+                         (EffectInstr 'return '("a") '() '()))))))
+
+
+
 (define json-output-testsuite
     (test-suite
      "bril to json conversion"
@@ -114,4 +127,8 @@
         (test-case
           "simple program with return value"
           (check-equal? (interp-bril program-listing-3 "main")
-                        (list (Type 'int) 8)))))
+                        (list (Type 'int) 8)))
+        (test-case
+          "simple program with return value, using subtraction"
+          (check-equal? (interp-bril program-listing-4 "main")
+                        (list (Type 'int) -2)))))
