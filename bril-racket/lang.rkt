@@ -2,7 +2,7 @@
 
 (provide 
    Program Function Argument Label ConstantInstr ValueInstr EffectInstr 
-   Type Bool Int effect-ops value-ops write-bril
+   Type Bool Int effect-ops value-ops write-bril program-to-jsexpr
    Function-args Type-type)
 
 (require json)
@@ -30,13 +30,13 @@
 (define (program-to-jsexpr p)
   (match p
     [(Program functions)
-     (let ([h (make-immutable-hash)])
+     (let ([h (make-immutable-hasheq)])
          (hash-set h 'functions (map function-to-jsexpr functions)))]))
 
 (define (function-to-jsexpr function)
   (match function
     [(Function name args return-type instrs)
-     (let ([h (hash-set* (make-immutable-hash)
+     (let ([h (hash-set* (make-immutable-hasheq)
                  'name name
                  'args (map arg-to-jsexpr args)
                  'instrs (map instr-to-jsexpr instrs))])
@@ -47,7 +47,7 @@
 (define (arg-to-jsexpr arg)
   (match arg
     [(Argument name type)
-     (make-immutable-hash `([name . ,name] [type . ,(type-to-jsexpr type)]))]))
+     (make-immutable-hasheq `([name . ,name] [type . ,(type-to-jsexpr type)]))]))
 
 ; TODO: check that the type is valid
 (define (type-to-jsexpr type)
@@ -58,15 +58,15 @@
 (define (instr-to-jsexpr instr)
   (match instr
     [(Label label)
-     `#hash((label . ,label))]
+     `#hasheq((label . ,label))]
     [(ConstantInstr dest type value)
-     (make-immutable-hash 
+     (make-immutable-hasheq
       `([op . "const"]
         [dest . ,dest]
         [type . ,(type-to-jsexpr type)]
         [value . ,value]))]
     [(ValueInstr op dest type args funcs labels)
-     (make-immutable-hash 
+     (make-immutable-hasheq
       `([op . ,(symbol->string op)]
         [dest . ,dest]
         [type . ,(type-to-jsexpr type)]
@@ -74,7 +74,7 @@
         [funcs . ,funcs]
         [labels . ,labels]))]
     [(EffectInstr op args funcs labels)
-     (make-immutable-hash 
+     (make-immutable-hasheq
       `([op . ,(symbol->string op)]
         [args . ,args]
         [funcs . ,funcs]
