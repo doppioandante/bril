@@ -2,12 +2,12 @@
 
 (provide 
    Program Function Argument Label ConstantInstr ValueInstr EffectInstr 
-   Type Bool Int effect-ops value-ops write-bril program-to-jsexpr
-   Function-args Type-type)
+   Type Bool CLibrary CFunction Int effect-ops value-ops write-bril 
+   program-to-jsexpr Function-args Type-type Argument-type)
 
 (require json)
 
-(struct Program (functions) #:transparent)
+(struct Program (functions clibraries) #:transparent)
 (struct Function (name args return-type instrs) #:transparent)
 (struct Argument (name type) #:transparent)
 (struct Label (label) #:transparent)
@@ -18,18 +18,24 @@
 (struct Int (value) #:transparent)
 (struct Bool (value) #:transparent)
 
+(struct CLibrary (abspath functions) #:transparent)
+(struct CFunction (name args return-type) #:transparent)
+
 (define effect-ops
-  '(jump branch call return print nop))
+  '(jump branch call ccall return print nop))
 
 (define value-ops
-  '(add sub mul div eq lt gt le ge not and or call id))
+  '(add sub mul div eq lt gt le ge not and or call ccall id))
+
+(define bril-types
+  '(int bool))
 
 (define (write-bril program)
   (write-json (program-to-jsexpr program)))
 
 (define (program-to-jsexpr p)
   (match p
-    [(Program functions)
+    [(Program functions clibraries)
      (let ([h (make-immutable-hasheq)])
          (hash-set h 'functions (map function-to-jsexpr functions)))]))
 

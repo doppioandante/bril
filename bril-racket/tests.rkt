@@ -21,7 +21,8 @@
                        (list
                          (Label "start")
                          (ValueInstr 'add "a" (Type 'int)
-                                   '("z" "w") '() '()))))))
+                                   '("z" "w") '() '()))))
+            '()))
 
 (define program-listing-2
    (Program (list
@@ -32,7 +33,8 @@
                          (ValueInstr 'id "w" (Type 'int) '(5) '() '())
                          (ValueInstr 'add "a" (Type 'int)
                                    '("z" "w") '() '())
-                         (EffectInstr 'print '("a") '() '()))))))
+                         (EffectInstr 'print '("a") '() '()))))
+            '()))
 
 (define program-listing-3
    (Program (list
@@ -43,7 +45,8 @@
                          (ValueInstr 'id "w" (Type 'int) '(5) '() '())
                          (ValueInstr 'add "a" (Type 'int)
                                    '("z" "w") '() '())
-                         (EffectInstr 'return '("a") '() '()))))))
+                         (EffectInstr 'return '("a") '() '()))))
+            '()))
 
 (define program-listing-4
    (Program (list
@@ -54,7 +57,8 @@
                          (ValueInstr 'id "w" (Type 'int) '(5) '() '())
                          (ValueInstr 'sub "a" (Type 'int)
                                    '("z" "w") '() '())
-                         (EffectInstr 'return '("a") '() '()))))))
+                         (EffectInstr 'return '("a") '() '()))))
+            '()))
 
 
 
