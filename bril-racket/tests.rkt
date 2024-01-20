@@ -30,7 +30,7 @@
                        (list
                          (Label "start")
                          (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
                          (ValueInstr 'add "a" (Type 'int)
                                    '("z" "w") '() '())
                          (EffectInstr 'print '("a") '() '()))))
@@ -42,7 +42,7 @@
                        (list
                          (Label "start")
                          (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
                          (ValueInstr 'add "a" (Type 'int)
                                    '("z" "w") '() '())
                          (EffectInstr 'return '("a") '() '()))))
@@ -54,7 +54,7 @@
                        (list
                          (Label "start")
                          (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '(5) '() '())
+                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
                          (ValueInstr 'sub "a" (Type 'int)
                                    '("z" "w") '() '())
                          (EffectInstr 'return '("a") '() '()))))
@@ -131,8 +131,8 @@
         (test-case
           "simple program with return value"
           (check-equal? (interp-bril program-listing-3 "main")
-                        (list (Type 'int) 8)))
+                        (list (Type 'int) 6)))
         (test-case
           "simple program with return value, using subtraction"
           (check-equal? (interp-bril program-listing-4 "main")
-                        (list (Type 'int) -2)))))
+                        (list (Type 'int) 0)))))

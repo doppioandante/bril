@@ -2,7 +2,7 @@
 
 (provide 
    Program Function Argument Label ConstantInstr ValueInstr EffectInstr 
-   Type Bool CLibrary CFunction Int effect-ops value-ops write-bril 
+   Type CLibrary CFunction effect-ops value-ops write-bril 
    program-to-jsexpr Function-args Type-type Argument-type)
 
 (require json)
@@ -15,8 +15,6 @@
 (struct ValueInstr (op dest type args funcs labels) #:transparent)
 (struct EffectInstr (op args funcs labels) #:transparent)
 (struct Type (type) #:transparent)
-(struct Int (value) #:transparent)
-(struct Bool (value) #:transparent)
 
 (struct CLibrary (abspath functions) #:transparent)
 (struct CFunction (name args return-type) #:transparent)

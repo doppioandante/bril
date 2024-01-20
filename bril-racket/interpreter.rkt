@@ -107,11 +107,9 @@
        env)]))
 
 (define (eval-args args env)
-   (map (lambda (arg)
-             (if (string? arg)
-                 (cadr (hash-ref env arg))
-                 arg))
-        args))
+   (map 
+     (lambda (arg) (cadr (hash-ref env arg)))
+     args))
 
 (define (display-bril-var var)
   (let ([type (Type-type (car var))]
