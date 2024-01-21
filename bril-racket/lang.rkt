@@ -2,8 +2,8 @@
 
 (provide 
    Program Function Argument Label ConstantInstr ValueInstr EffectInstr 
-   Type CLibrary CFunction effect-ops value-ops write-bril 
-   program-to-jsexpr Function-args Type-type Argument-type)
+   CLibrary CFunction effect-ops value-ops write-bril program-to-jsexpr
+   Function-args Argument-type)
 
 (require json)
 
@@ -14,7 +14,6 @@
 (struct ConstantInstr (dest type value) #:transparent)
 (struct ValueInstr (op dest type args funcs labels) #:transparent)
 (struct EffectInstr (op args funcs labels) #:transparent)
-(struct Type (type) #:transparent)
 
 (struct CLibrary (abspath functions) #:transparent)
 (struct CFunction (name args return-type) #:transparent)
@@ -54,10 +53,7 @@
      (make-immutable-hasheq `([name . ,name] [type . ,(type-to-jsexpr type)]))]))
 
 ; TODO: check that the type is valid
-(define (type-to-jsexpr type)
-  (match type
-    [(Type type)
-     (symbol->string type)]))
+(define (type-to-jsexpr type) (symbol->string type))
 
 (define (instr-to-jsexpr instr)
   (match instr

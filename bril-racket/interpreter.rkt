@@ -50,15 +50,14 @@
           ,(get-ffi-obj name clib (signature-to-racket-ffi args return-type)))])))
        
 (define (signature-to-racket-ffi args return-type)
-  (_cprocedure (map (compose Argument-type bril-type-to-racket-ffi)
-                    args)
+  (_cprocedure (map bril-type-to-racket-ffi args)
                (bril-type-to-racket-ffi return-type)))
 
 (define (bril-type-to-racket-ffi type)
    (cond
       [(eq? type 'int) _int64]
       [(eq? type 'bool) _stdbool]
-      [(empty? type) _void]))
+      [(null? type) _void]))
        
 
 (define (abspath-to-racket-ffi-path path) path)
@@ -78,7 +77,10 @@
               (interp-bril-func func actual-args new-env new-pc cffi-entries))]
             [(ValueInstr op dest type args funcs labels)
              (begin
-              (define result (interp-bril-value-op op type (eval-args args env)))
+              (define result
+                (if (eq? op 'ccall)
+                  (call-cffi-func-args args env cffi-entries)
+                  (interp-bril-value-op op type (eval-args args env) cffi-entries)))
               (define new-env (hash-set env dest (list type result)))
               (define new-pc (+ pc 1))
               (interp-bril-func func actual-args new-env new-pc cffi-entries))]
@@ -92,11 +94,7 @@
                     (display-bril-var (hash-ref env (car args)))
                     (values env (+ pc 1) '())]
                    ['ccall
-                    (define lib-index (car args))
-                    (define func-name (cadr args))
-                    (call-cffi-func lib-index func-name
-                                    (eval-args (cddr args) env)
-                                    cffi-entries)
+                    (call-cffi-func-args args env cffi-entries)
                     (values env (+ pc 1) '())]
                    ['return
                     (values env pc (hash-ref env (car args)))])))
@@ -112,11 +110,18 @@
      args))
 
 (define (display-bril-var var)
-  (let ([type (Type-type (car var))]
-        [val  (cadr var)])
+  (let ([type (first var)]
+        [val  (second var)])
       (match type
          ['int (displayln val)]
          [_ (error "Unknown type ~a" type)])))
+
+(define (call-cffi-func-args args env cffi-entries)
+  (define lib-index (car args))
+  (define func-name (cadr args))
+  (call-cffi-func lib-index func-name
+                  (eval-args (cddr args) env)
+                  cffi-entries))
 
 (define (call-cffi-func lib-index name args cffi-entries)
   (begin
@@ -124,7 +129,7 @@
     (define cfuncs-hash (CFFIEntry-cfuncs cffi-entry))
     (apply (hash-ref cfuncs-hash name) args)))
 
-(define (interp-bril-value-op op type args)
+(define (interp-bril-value-op op type args cffi-entries)
    (match op
       ['id (car args)]
       ['add (+ (car args) (cadr args))]

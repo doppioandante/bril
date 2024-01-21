@@ -20,7 +20,7 @@
              (Function "main" '() '()
                        (list
                          (Label "start")
-                         (ValueInstr 'add "a" (Type 'int)
+                         (ValueInstr 'add "a" 'int
                                    '("z" "w") '() '()))))
             '()))
 
@@ -29,9 +29,9 @@
              (Function "main" '() '()
                        (list
                          (Label "start")
-                         (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
-                         (ValueInstr 'add "a" (Type 'int)
+                         (ConstantInstr "z" 'int 3)
+                         (ValueInstr 'id "w" 'int '("z") '() '())
+                         (ValueInstr 'add "a" 'int
                                    '("z" "w") '() '())
                          (EffectInstr 'print '("a") '() '()))))
             '()))
@@ -41,9 +41,9 @@
              (Function "main" '() '()
                        (list
                          (Label "start")
-                         (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
-                         (ValueInstr 'add "a" (Type 'int)
+                         (ConstantInstr "z" 'int 3)
+                         (ValueInstr 'id "w" 'int '("z") '() '())
+                         (ValueInstr 'add "a" 'int
                                    '("z" "w") '() '())
                          (EffectInstr 'return '("a") '() '()))))
             '()))
@@ -53,9 +53,9 @@
              (Function "main" '() '()
                        (list
                          (Label "start")
-                         (ConstantInstr "z" (Type 'int) 3)
-                         (ValueInstr 'id "w" (Type 'int) '("z") '() '())
-                         (ValueInstr 'sub "a" (Type 'int)
+                         (ConstantInstr "z" 'int 3)
+                         (ValueInstr 'id "w" 'int '("z") '() '())
+                         (ValueInstr 'sub "a" 'int
                                    '("z" "w") '() '())
                          (EffectInstr 'return '("a") '() '()))))
             '()))
@@ -81,22 +81,22 @@
      "bril to jsexrp conversion"
      (test-case
         "type to jsexpr conversion"
-        (check-equal? (type-to-jsexpr (Type 'bool)) "bool")
-        (check-equal? (type-to-jsexpr (Type 'int)) "int"))
+        (check-equal? (type-to-jsexpr 'bool) "bool")
+        (check-equal? (type-to-jsexpr 'int) "int"))
      (test-case
         "argument to jsexpr conversion"
-        (check-equal? (arg-to-jsexpr (Argument 'a (Type 'int)))
+        (check-equal? (arg-to-jsexpr (Argument 'a 'int))
                       '#hasheq((name . a) (type . "int"))))
      (test-case
         "instr to jsexpr conversion"
         (check-equal? (instr-to-jsexpr (Label "x"))
                       '#hasheq((label . "x")))
-        (check-equal? (instr-to-jsexpr (ConstantInstr "a" (Type 'int) 2))
+        (check-equal? (instr-to-jsexpr (ConstantInstr "a" 'int 2))
                       '#hasheq([op . "const"]
                                [dest . "a"]
                                [type . "int"]
                                [value . 2]))
-        (check-equal? (instr-to-jsexpr (ValueInstr 'add "a" (Type 'int) 
+        (check-equal? (instr-to-jsexpr (ValueInstr 'add "a" 'int 
                                                    '("z" "w") '() '()))
                       '#hasheq([op . "add"]
                                [dest . "a"]
@@ -127,12 +127,15 @@
     (test-suite "bril interpreter tests"
         (test-case
           "simple program execution "
-          (interp-bril program-listing-2 "main"))
+          (check-equal? (with-output-to-string
+                           (lambda ()
+                             (interp-bril program-listing-2 "main")))
+                        "6\n"))
         (test-case
           "simple program with return value"
           (check-equal? (interp-bril program-listing-3 "main")
-                        (list (Type 'int) 6)))
+                        (list 'int 6)))
         (test-case
           "simple program with return value, using subtraction"
           (check-equal? (interp-bril program-listing-4 "main")
-                        (list (Type 'int) 0)))))
+                        (list 'int 0)))))

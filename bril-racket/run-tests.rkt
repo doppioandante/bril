@@ -5,5 +5,9 @@
 (require "tests.rkt")
 (require "ffi-tests.rkt")
 
-(run-tests all-tests)
-(run-tests ffi-tests)
+(void
+ (begin
+    (system "gcc -fPIC -shared cffitest.so -o cffitest.o")
+
+    (run-tests all-tests)
+    (run-tests ffi-tests)))
